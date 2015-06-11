@@ -22,7 +22,7 @@
 	margin-left: auto;
 }
 .panel {
-	width: 250px;
+	width: 300px;
 	margin-right: auto;
 	margin-left: auto;
 }
@@ -31,4 +31,10 @@ body {
 }
 .page {
 	display: none;
+}
+
+#image-form{
+	width: 500px;
+	margin-right: auto;
+	margin-left: auto;
 }

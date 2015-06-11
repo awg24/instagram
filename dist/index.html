@@ -32,12 +32,43 @@
 	  			</div>
 	  			<div id="error-login"></div><br>
 	  			<button type="button" class="btn btn-primary" id="login-btn">Log In</button><br><br>
+	  			<label class="control-label">----- OR -----</label><br><br>
+	  			<div class="control-group" id="blank">
+			  		<label class="control-label">Sign Up</label>
+			  		<div class="controls">
+			  			<input type="input" id="new-username" placeholder="Enter New Username"><br><br>
+			  		</div>
+				  	<div class="control-group" id="password-not-match">
+				  		<label class="control-label">Password</label>
+				  		<div class="controls">
+				  			<input type="password" id="new-password" placeholder="Choose a password"><br><br>
+				  		</div>
+				  		<label class="control-label">Confirm Password</label>
+				  		<div class="controls">
+				  			<input	type="password" id="confirm-new-password" placeholder="Enter password again">
+				  		</div>
+				  	</div>
+			  		<label class="control-label" id="label-error"></label>
+	  			</div>
+	  			<button type="button" class="btn btn-primary" id="sign-up-btn">Submit</button>
 	  			<br><br>
   			</form>
   		</div>
 	</div>
 	<div class="page" id="profile">
-		i work
+		<div id="image-form">
+			<form>
+				<input class="form-control" id="image-url" type="text" placeholder="Add image URL">
+				<textarea class="form-control" id="caption"rows="3" placeholder="Add a Caption"></textarea>
+				<div id="error-message" class="text-center text-danger"></div>
+				<div id="success-message" class="text-center text-success"></div>
+				<br>
+				<div class="btn-center">
+					<button id="cancel" type="button" class="btn increase-margin btn-danger">Cancel</button>
+					<button id="submit-image"type="button" class="btn btn-success"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Add Photo</button>
+				</div>
+			</form>	
+		</div>
 	</div>
 	<script type="text/javascript" src="scripts/all.js"></script>
 </body>

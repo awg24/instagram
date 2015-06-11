@@ -7,5 +7,7 @@ module.exports = Backbone.Model.extend({
 		_id: null,
 		username: null,
 		password: null
-	}
+	},
+	urlRoot: "https://tiny-pizza-server.herokuapp.com/collections/awg-login/",
+	idAttribute: "_id"
 });
