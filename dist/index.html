@@ -43,7 +43,7 @@
 			  		</div>
 			  		<label class="control-label">Full Name</label>
 			  		<div class="controls">
-			  			<input type="input" id="new-name" placeholder="Enter Your Full Name" value="allen Wes"><br><br>
+			  			<input type="input" id="new-name" placeholder="Enter Your Full Name" value="Allen Wes"><br><br>
 			  		</div>
 			  		<label class="control-label">Email</label>
 			  		<div class="controls">
@@ -92,16 +92,19 @@
 			<img class="img-responsive" src="<%= model.get('imageUrl')%>">
 			<h5><%= model.get("caption") %></h5>
 			<div class="panel panel-default">
-			  <div class="panel-body">
+			  <div class="panel-body" data-id-comment-placer="<%= model.cid %>">
 			    No Comments Here... Yet
 			  </div>
 			</div>
 			<form data-form-cid="<%= model.cid %>">
-				<input type="text">
+				<input type="text" class="commentPost">
 				<button class="btn btn-xs btn-primary">Add Comment</button>
 			</form>
 		</div>
 	</script>>
+	<script type="text/template" id="comment-holder">
+		<div><%= userModel.get("username") %>: <%= model.get("text") %> </div>
+	</script>
 	<script type="text/javascript" src="scripts/all.js"></script>
 </body>
 </html>

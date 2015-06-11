@@ -4,23 +4,38 @@ var _ = require("backbone/node_modules/underscore");
 Backbone.$ = $;
 
 $(document).ready(function(){
+
 	var $deleteAllPics = $("#delete-all-pics");
 	var $deleteAllComments = $("#delete-all-comments");
 	var $deleteAllUsers = $("#delete-all-users")
 
 	var UserCollection = require("./collections/UserCollection.js");
 	var ImageCollection = require("./collections/ImageCollection.js");
+	var CommentCollection = require("./collections/CommentCollection.js");
 
 	var UserModel = require("./models/UserModel.js");
 	var ImageModel = require("./models/ImageModel.js");
+	var CommentModel = require("./models/CommentModel.js");
 
 	var userCollection = new UserCollection();
 	var imageCollection = new ImageCollection();
+	var commentCollection = new CommentCollection();
 	
-	var userNameBuilder = _.template($("#username-holder").html())
-	var imageBuilder = _.template($("#image-holder").html())
+	var userNameBuilder = _.template($("#username-holder").html());
+	var imageBuilder = _.template($("#image-holder").html());
+	var commentBuilder = _.template($("#comment-holder").html());
 
-	var globalUser;
+	var commentHtml = "";
+
+	userCollection.fetch({
+		success: function(){
+			imageCollection.fetch({
+				success: function(){
+					commentCollection.fetch()
+				}
+			});
+		}
+	});
 
 	var routerConfig = {
 		routes:{
@@ -58,25 +73,29 @@ $(document).ready(function(){
 			fullName: $("#new-name").val(),
 			email: $("#email").val(),
 		});
+
 		userModel.save();
-		globalUser = userModel;
-		console.log(userCollection);
 		userCollection.add(userModel);
+
+		console.log(userModel);
+
+		$submitImage.on("click", function(){
+
+			var imageModel = new ImageModel({
+				imageUrl: $("#image-url").val(),
+				caption: $("#caption").val(),
+				imageOwner: userModel.id
+			});
+
+			imageModel.save();
+			imageCollection.add(imageModel);
+			
+		});
 
 		myRoutes.navigate("profile/"+$("#new-username").val(),{trigger:true})
 	});
 
-	$submitImage.on("click", function(){
-
-		var imageModel = new ImageModel({
-			imageUrl: $("#image-url").val(),
-			caption: $("#caption").val(),
-			imageOwner: globalUser.id
-		});
-
-		imageCollection.add(imageModel);
-		imageModel.save();
-	});
+	
 
 	userCollection.on("add", function(addedUser){
 		var nameHtml = userNameBuilder({model: addedUser});
@@ -84,13 +103,39 @@ $(document).ready(function(){
 	});
 
 	imageCollection.on("add", function(addedImage){
+
+		var userId = addedImage.get("imageOwner");
+		console.log(userId);
+		var userModel = userCollection.get(userId);
+		console.log("seeing what this is "+userModel.id);
+
 		var imageHtml = imageBuilder({model: addedImage});
 		$("#place-image-here").append(imageHtml);
 
 		$("[data-form-cid="+addedImage.cid+"]").on("submit", function(event){
 			event.preventDefault();
-			console.log("i work!"+addedImage.cid)
+			var commentModel = new CommentModel({
+				text: $(this).find(".commentPost").val(),
+				imageId: addedImage.id,
+				commentOwner: userModel.id
+			});
+
+			commentModel.save();
+			commentCollection.add(commentModel);
+
 		})
+	});
+
+	commentCollection.on("add", function(addedComment){
+		var userId = addedComment.get("commentOwner");
+		var userModel = userCollection.get(userId);
+
+		var commentBuilt = commentBuilder({model: addedComment, userModel: userModel});
+		var imageId = addedComment.get("imageId");
+		
+		var imageModel = imageCollection.get(imageId);
+		
+		$("[data-id-comment-placer="+imageModel.cid+"]").append(commentBuilt);
 	});
 
 
