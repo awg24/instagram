@@ -10,6 +10,9 @@
 		<div class="container-fluid">
 			<div class="navbar-header text-center">
 				<span>Totally Not Instragram</span>
+				<button class="btn" id="delete-all-pics">delete all pics</button>
+				<button class="btn" id="delete-all-comments">delete all comments</button>
+				<button class="btn" id="delete-all-users">delete all users</button>
 			</div>
 		</div>
 	</nav>
@@ -36,12 +39,20 @@
 	  			<div class="control-group" id="blank">
 			  		<label class="control-label">Sign Up</label>
 			  		<div class="controls">
-			  			<input type="input" id="new-username" placeholder="Enter New Username"><br><br>
+			  			<input type="input" id="new-username" placeholder="Enter New Username" value="awgarcia"><br><br>
+			  		</div>
+			  		<label class="control-label">Full Name</label>
+			  		<div class="controls">
+			  			<input type="input" id="new-name" placeholder="Enter Your Full Name" value="allen Wes"><br><br>
+			  		</div>
+			  		<label class="control-label">Email</label>
+			  		<div class="controls">
+			  			<input type="input" id="email" placeholder="Enter New Email" value="allen@email.com"><br><br>
 			  		</div>
 				  	<div class="control-group" id="password-not-match">
 				  		<label class="control-label">Password</label>
 				  		<div class="controls">
-				  			<input type="password" id="new-password" placeholder="Choose a password"><br><br>
+				  			<input type="password" id="new-password" placeholder="Choose a password" value="1234"><br><br>
 				  		</div>
 				  		<label class="control-label">Confirm Password</label>
 				  		<div class="controls">
@@ -65,11 +76,32 @@
 				<br>
 				<div class="btn-center">
 					<button id="cancel" type="button" class="btn increase-margin btn-danger">Cancel</button>
-					<button id="submit-image"type="button" class="btn btn-success"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Add Photo</button>
+					<button id="submit-image" type="button" class="btn btn-success"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Add Photo</button>
 				</div>
 			</form>	
 		</div>
+		<br>
+		<div id="username-goes-here"></div>
+		<div id="place-image-here" class="well container"></div>
 	</div>
+	<script type="text/template" id="username-holder">
+		<div class="container text-left"><h2>Profile of <%= model.get("fullName") %></h2></div>
+	</script>
+	<script type="text/template" id="image-holder">
+		<div data-cid="<%= model.cid %>" class="well col-sm-6 text-center">
+			<img class="img-responsive" src="<%= model.get('imageUrl')%>">
+			<h5><%= model.get("caption") %></h5>
+			<div class="panel panel-default">
+			  <div class="panel-body">
+			    No Comments Here... Yet
+			  </div>
+			</div>
+			<form data-form-cid="<%= model.cid %>">
+				<input type="text">
+				<button class="btn btn-xs btn-primary">Add Comment</button>
+			</form>
+		</div>
+	</script>>
 	<script type="text/javascript" src="scripts/all.js"></script>
 </body>
 </html>

@@ -38,3 +38,8 @@ body {
 	margin-right: auto;
 	margin-left: auto;
 }
+.user-header {
+	margin-left: auto;
+	margin-right: auto;
+	width:300px;
+}
