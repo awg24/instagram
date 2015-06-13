@@ -4,6 +4,8 @@ var _ = require("backbone/node_modules/underscore");
 Backbone.$ = $;
 
 $(document).ready(function(){
+	var runOnce = false;
+	var runForeverMore = false;
 
 	var $deleteAllPics = $("#delete-all-pics");
 	var $deleteAllComments = $("#delete-all-comments");
@@ -25,31 +27,25 @@ $(document).ready(function(){
 	var imageBuilder = _.template($("#image-holder").html());
 	var commentBuilder = _.template($("#comment-holder").html());
 
-	var commentHtml = "";
+	var loggedInUser;
+	var userSpecifcImages;
 
-	userCollection.fetch({
-		success: function(){
-			imageCollection.fetch({
-				success: function(){
-					commentCollection.fetch()
-				}
-			});
-		}
-	});
+	userCollection.fetch();
 
 	var routerConfig = {
 		routes:{
 			"":"login",
 			"login":"login",
-			"profile/:user":"profile"
+			"profile/:user3":"profile"
 		},
 		login:function(){
+			$(".page").hide();
 			$("#login").show();
 		},
 		profile:function(user){
 			$(".page").hide();
 			$("#profile").show();
-			console.log(user);
+			$("#place-image-here").html("");			
 		}
 	}
 
@@ -61,69 +57,66 @@ $(document).ready(function(){
 	var $signUpBtn = $("#sign-up-btn");
 	var $submitImage = $("#submit-image");
 
-	$loginBtn.on("click", function(){
 
-		myRoutes.navigate("profile/"+$("#username").val(),{trigger:true})
+	$loginBtn.on("click", function(){
+		loggedInUser = userCollection.findWhere({username: $("#username").val()});
+		imageCollection.fetch({
+			success: function(images){
+				commentCollection.fetch()
+			}
+		});
+		myRoutes.navigate("profile/"+$("#username").val(), {trigger: true});
 	});
 
 	$signUpBtn.on("click", function(){
-		var userModel = new UserModel({
+		var newUser = new UserModel({
 			username: $("#new-username").val(),
 			password: $("#new-password").val(),
 			fullName: $("#new-name").val(),
-			email: $("#email").val(),
+			email: $("#email").val()
 		});
 
-		userModel.save();
-		userCollection.add(userModel);
+		newUser.save();
+		userCollection.add(newUser);
+		loggedInUser = newUser;
+		var profileNameBuilt = userNameBuilder({model: newUser});
+		$("#username-goes-here").append(profileNameBuilt);
+		myRoutes.navigate("profile/"+$("#new-username").val(), {trigger: true});
+	});
 
-		console.log(userModel);
-
-		$submitImage.on("click", function(){
-
-			var imageModel = new ImageModel({
-				imageUrl: $("#image-url").val(),
-				caption: $("#caption").val(),
-				imageOwner: userModel.id
-			});
-
-			imageModel.save();
-			imageCollection.add(imageModel);
-			
+	$submitImage.on("click", function(){
+		var image = new ImageModel({
+			imageUrl: $("#image-url").val(),
+			caption: $("#caption").val(),
+			imageOwner: loggedInUser.id
 		});
-
-		myRoutes.navigate("profile/"+$("#new-username").val(),{trigger:true})
+		image.save();
+		imageCollection.add(image);	
 	});
 
-	
+	imageCollection.on("add", function(addedImage){			
 
-	userCollection.on("add", function(addedUser){
-		var nameHtml = userNameBuilder({model: addedUser});
-		$("#username-goes-here").html(nameHtml);
-	});
+			if(addedImage.get("imageOwner") === loggedInUser.id){
+				var imageboardBuilt = imageBuilder({model: addedImage});
+				$("#place-image-here").append(imageboardBuilt);
 
-	imageCollection.on("add", function(addedImage){
+		
 
-		var userId = addedImage.get("imageOwner");
-		console.log(userId);
-		var userModel = userCollection.get(userId);
-		console.log("seeing what this is "+userModel.id);
+				$('[data-form-cid="'+addedImage.cid+'"]').on("submit", function(event){
+					event.preventDefault();
+					var commentModel = new CommentModel({
+						text: $(this).find(".commentPost").val(),
+						imageId: addedImage.id,
+						commentOwner: loggedInUser.id
+					});
 
-		var imageHtml = imageBuilder({model: addedImage});
-		$("#place-image-here").append(imageHtml);
+					commentModel.save();
+					commentCollection.add(commentModel);
 
-		$("[data-form-cid="+addedImage.cid+"]").on("submit", function(event){
-			event.preventDefault();
-			var commentModel = new CommentModel({
-				text: $(this).find(".commentPost").val(),
-				imageId: addedImage.id,
-				commentOwner: userModel.id
-			});
+				});
+			}
 
-			commentModel.save();
-			commentCollection.add(commentModel);
-
-		})
+		
 	});
 
 	commentCollection.on("add", function(addedComment){
@@ -131,15 +124,12 @@ $(document).ready(function(){
 		var userModel = userCollection.get(userId);
 
 		var commentBuilt = commentBuilder({model: addedComment, userModel: userModel});
-		var imageId = addedComment.get("imageId");
+		var imageIdForComment = addedComment.get("imageId");
 		
-		var imageModel = imageCollection.get(imageId);
-		
-		$("[data-id-comment-placer="+imageModel.cid+"]").append(commentBuilt);
+		var imageModel = imageCollection.get(imageIdForComment);
+
+		$("[data-id-comment-placer="+imageModel.cid+"]").prepend(commentBuilt);
 	});
-
-
-
 
 
 

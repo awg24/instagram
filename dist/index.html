@@ -82,7 +82,7 @@
 		</div>
 		<br>
 		<div id="username-goes-here"></div>
-		<div id="place-image-here" class="well container"></div>
+		<div id="place-image-here" class="well container target-form"></div>
 	</div>
 	<script type="text/template" id="username-holder">
 		<div class="container text-left"><h2>Profile of <%= model.get("fullName") %></h2></div>
@@ -92,16 +92,16 @@
 			<img class="img-responsive" src="<%= model.get('imageUrl')%>">
 			<h5><%= model.get("caption") %></h5>
 			<div class="panel panel-default">
-			  <div class="panel-body" data-id-comment-placer="<%= model.cid %>">
+			  <div class="panel-body scroller" data-id-comment-placer="<%= model.cid %>">
 			    No Comments Here... Yet
 			  </div>
 			</div>
 			<form data-form-cid="<%= model.cid %>">
 				<input type="text" class="commentPost">
-				<button class="btn btn-xs btn-primary">Add Comment</button>
+				<button type="submit" class="btn btn-xs btn-primary">Add Comment</button>
 			</form>
 		</div>
-	</script>>
+	</script>
 	<script type="text/template" id="comment-holder">
 		<div><%= userModel.get("username") %>: <%= model.get("text") %> </div>
 	</script>

@@ -43,3 +43,7 @@ body {
 	margin-right: auto;
 	width:300px;
 }
+.scroller {
+	height: 100px;
+	overflow: scroll;
+}
