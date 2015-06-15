@@ -11,7 +11,11 @@ module.exports = Backbone.Model.extend({
 		commentOwner: null
 	},
 	validate: function(attr, options){
-		return attr.text;
+		if(attr.text === ""){
+			return "dont be empty";
+		} else {
+			return false;
+		}
 	},
 	urlRoot: "https://tiny-pizza-server.herokuapp.com/collections/awg-comments/",
 	idAttribute: "_id"

@@ -16,8 +16,8 @@ module.exports = Backbone.Model.extend({
 			return "*Fields must not be blank, except email.. we don't mind."
 		} else if(!validator.isAlphanumeric(attr.username)){
 			return "*Usernames must only contain numbers and/or letters."
-		} else if(attr.password.length < 8){
-			return "*Password must be 8 or more characters."
+		} else if(attr.password.length < 3){
+			return "*Password must be 3 or more characters."
 		} else {
 			return false;
 		}

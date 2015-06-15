@@ -125,7 +125,7 @@ $(document).ready(function(){
 					commentOwner: loggedInUser.id
 				});
 
-				if(!commentModel.isValid()){
+				if(commentModel.isValid()){
 					commentModel.save();
 					commentCollection.add(commentModel);
 					$(this).find(".commentPost").val("");

@@ -13548,7 +13548,7 @@ $(document).ready(function(){
 					commentOwner: loggedInUser.id
 				});
 
-				if(!commentModel.isValid()){
+				if(commentModel.isValid()){
 					commentModel.save();
 					commentCollection.add(commentModel);
 					$(this).find(".commentPost").val("");
@@ -13667,7 +13667,11 @@ module.exports = Backbone.Model.extend({
 		commentOwner: null
 	},
 	validate: function(attr, options){
-		return attr.text;
+		if(attr.text === ""){
+			return "dont be empty";
+		} else {
+			return false;
+		}
 	},
 	urlRoot: "https://tiny-pizza-server.herokuapp.com/collections/awg-comments/",
 	idAttribute: "_id"
@@ -13726,8 +13730,8 @@ module.exports = Backbone.Model.extend({
 			return "*Fields must not be blank, except email.. we don't mind."
 		} else if(!validator.isAlphanumeric(attr.username)){
 			return "*Usernames must only contain numbers and/or letters."
-		} else if(attr.password.length < 8){
-			return "*Password must be 8 or more characters."
+		} else if(attr.password.length < 3){
+			return "*Password must be 3 or more characters."
 		} else {
 			return false;
 		}
