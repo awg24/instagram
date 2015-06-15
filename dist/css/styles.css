@@ -47,3 +47,6 @@ body {
 	height: 100px;
 	overflow: scroll;
 }
+#signup-error, #login-error, #image-error{
+	color: red;
+}

@@ -10,6 +10,9 @@ module.exports = Backbone.Model.extend({
 		imageId: null,
 		commentOwner: null
 	},
+	validate: function(attr, options){
+		return attr.text;
+	},
 	urlRoot: "https://tiny-pizza-server.herokuapp.com/collections/awg-comments/",
 	idAttribute: "_id"
 });

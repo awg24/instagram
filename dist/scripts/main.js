@@ -36,7 +36,7 @@ $(document).ready(function(){
 		routes:{
 			"":"login",
 			"login":"login",
-			"profile/:user3":"profile"
+			"profile/:user":"profile"
 		},
 		login:function(){
 			$(".page").hide();
@@ -57,66 +57,82 @@ $(document).ready(function(){
 	var $signUpBtn = $("#sign-up-btn");
 	var $submitImage = $("#submit-image");
 
-
 	$loginBtn.on("click", function(){
+		$('#login-error').html("");
 		loggedInUser = userCollection.findWhere({username: $("#username").val()});
-		imageCollection.fetch({
-			success: function(images){
-				commentCollection.fetch()
-			}
-		});
-		myRoutes.navigate("profile/"+$("#username").val(), {trigger: true});
+		if(loggedInUser){
+			var correctPassword = loggedInUser.attributes.password
+		}
+		if(!loggedInUser){
+			$("#login-error").html("*User does not exist.");
+		} else if(correctPassword !== $("#password").val()){
+			$("#login-error").html("*Password is incorrect")
+		} else {
+			imageCollection.fetch({
+				success: function(images){
+					commentCollection.fetch()
+				}
+			});
+			myRoutes.navigate("profile/"+$("#username").val(), {trigger: true});
+		}
 	});
 
 	$signUpBtn.on("click", function(){
+		$('#signup-error').html("");
 		var newUser = new UserModel({
 			username: $("#new-username").val(),
 			password: $("#new-password").val(),
 			fullName: $("#new-name").val(),
 			email: $("#email").val()
 		});
-
-		newUser.save();
-		userCollection.add(newUser);
-		loggedInUser = newUser;
-		var profileNameBuilt = userNameBuilder({model: newUser});
-		$("#username-goes-here").append(profileNameBuilt);
-		myRoutes.navigate("profile/"+$("#new-username").val(), {trigger: true});
+		if(newUser.isValid()){
+			newUser.save();
+			userCollection.add(newUser);
+			loggedInUser = newUser;
+			var profileNameBuilt = userNameBuilder({model: newUser});
+			$("#username-goes-here").append(profileNameBuilt);
+			myRoutes.navigate("profile/"+$("#new-username").val(), {trigger: true});
+		} else {
+			$('#signup-error').html(newUser.validationError);
+		}
 	});
 
 	$submitImage.on("click", function(){
+		$('#image-error').html("");
 		var image = new ImageModel({
 			imageUrl: $("#image-url").val(),
 			caption: $("#caption").val(),
 			imageOwner: loggedInUser.id
 		});
-		image.save();
-		imageCollection.add(image);	
+		if(image.isValid()){
+			image.save();
+			imageCollection.add(image);	
+		} else {
+			$('#image-error').html(image.validationError);
+		}
 	});
 
 	imageCollection.on("add", function(addedImage){			
 
-			if(addedImage.get("imageOwner") === loggedInUser.id){
-				var imageboardBuilt = imageBuilder({model: addedImage});
-				$("#place-image-here").append(imageboardBuilt);
+		if(addedImage.get("imageOwner") === loggedInUser.id){
+			var imageboardBuilt = imageBuilder({model: addedImage});
+			$("#place-image-here").append(imageboardBuilt);
+			$('[data-form-cid="'+addedImage.cid+'"]').on("submit", function(event){
+				event.preventDefault();
+				var commentModel = new CommentModel({
+					text: $(this).find(".commentPost").val(),
+					imageId: addedImage.id,
+					commentOwner: loggedInUser.id
+				});
 
-		
-
-				$('[data-form-cid="'+addedImage.cid+'"]').on("submit", function(event){
-					event.preventDefault();
-					var commentModel = new CommentModel({
-						text: $(this).find(".commentPost").val(),
-						imageId: addedImage.id,
-						commentOwner: loggedInUser.id
-					});
-
+				if(!commentModel.isValid()){
 					commentModel.save();
 					commentCollection.add(commentModel);
-
-				});
-			}
-
-		
+					$(this).find(".commentPost").val("");
+					$(this).find(".commentPost").focus();
+				}	
+			});
+		}	
 	});
 
 	commentCollection.on("add", function(addedComment){
@@ -130,29 +146,6 @@ $(document).ready(function(){
 
 		$("[data-id-comment-placer="+imageModel.cid+"]").prepend(commentBuilt);
 	});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	$deleteAllPics.on("click", function(){
 		var myDeleteArray = [];

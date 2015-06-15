@@ -32,11 +32,13 @@
 		  			<div class="controls">
 		  				<input type="password" id="password" placeholder="Password"><br><br>
 		  			</div>
+		  			<div id="login-error"></div>
 	  			</div>
 	  			<div id="error-login"></div><br>
 	  			<button type="button" class="btn btn-primary" id="login-btn">Log In</button><br><br>
 	  			<label class="control-label">----- OR -----</label><br><br>
 	  			<div class="control-group" id="blank">
+	  				<div id="signup-error"></div>
 			  		<label class="control-label">Sign Up</label>
 			  		<div class="controls">
 			  			<input type="input" id="new-username" placeholder="Enter New Username" value="awgarcia"><br><br>
@@ -78,6 +80,7 @@
 					<button id="cancel" type="button" class="btn increase-margin btn-danger">Cancel</button>
 					<button id="submit-image" type="button" class="btn btn-success"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Add Photo</button>
 				</div>
+				<div id="image-error"></div>
 			</form>	
 		</div>
 		<br>
@@ -93,7 +96,6 @@
 			<h5><%= model.get("caption") %></h5>
 			<div class="panel panel-default">
 			  <div class="panel-body scroller" data-id-comment-placer="<%= model.cid %>">
-			    No Comments Here... Yet
 			  </div>
 			</div>
 			<form data-form-cid="<%= model.cid %>">
