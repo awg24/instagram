@@ -73,6 +73,8 @@ $(document).ready(function(){
 					commentCollection.fetch()
 				}
 			});
+			var profileNameBuilt = userNameBuilder({model: loggedInUser});
+			$("#username-goes-here").append(profileNameBuilt);
 			myRoutes.navigate("profile/"+$("#username").val(), {trigger: true});
 		}
 	});
